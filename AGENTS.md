@@ -14,7 +14,8 @@ This repository is a native WeChat Mini Program for ingredient inventory managem
 
 ## Commands
 
-No project bootstrap, development, test, lint, formatting, or migration commands exist yet. Update this section after bootstrap establishes and verifies the real repository commands.
+- `corepack pnpm install --frozen-lockfile` — install the pinned workspace dependencies from the lockfile.
+- `corepack pnpm test` — run the Vitest test suite once.
 
 ## Rules
 
