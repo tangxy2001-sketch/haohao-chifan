@@ -7,7 +7,7 @@ This repository is a native WeChat Mini Program for ingredient inventory managem
 ## Sources of truth
 
 - `_docs/plan.md` — frozen product scope and MVP requirements.
-- Current architecture document — technical architecture and system boundaries. No architecture document is tracked yet; GitHub Issue #2 establishes it.
+- `_docs/architecture.md` — current technical architecture and system boundaries.
 - GitHub Issues — canonical active implementation backlog.
 - `_docs/tasks.md` — versioned snapshot of the original backlog; do not treat it as the active task tracker after Issues have been created.
 - `_docs/process.md` — development workflow and Git rules.
