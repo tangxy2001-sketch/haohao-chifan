@@ -9,7 +9,13 @@ Use this entry point in the coordinating main session only, on explicit user inv
 
 Read [AGENTS.md](../../../AGENTS.md), the current selected GitHub Issue, and [_docs/process.md](../../../_docs/process.md), especially “Issue workflow” and “Opt-in supervised Issue #4 pilot”. Resolve these links from this skill directory. The process owns approval, evidence, repair, and merge rules; follow its source-document routing for product scope and architecture rather than reproducing those documents here.
 
-Use the existing roles: [pilot_pm](../../../.codex/agents/pilot_pm.toml), [pilot_swe](../../../.codex/agents/pilot_swe.toml), and [pilot_qa](../../../.codex/agents/pilot_qa.toml). Read their instructions before handoff. Reconstruct the durable checkpoint from the conversation and PR evidence before resuming; missing or ambiguous state is BLOCKED.
+Use the existing named roles and their mapped responsibility documents:
+
+- [pilot_pm](../../../.codex/agents/pilot_pm.toml) → [Product Manager](../../../_docs/team/pm.md)
+- [pilot_swe](../../../.codex/agents/pilot_swe.toml) → [Software Engineer](../../../_docs/team/software-engineer.md)
+- [pilot_qa](../../../.codex/agents/pilot_qa.toml) → [QA Engineer](../../../_docs/team/qa-engineer.md)
+
+The TOMLs hold runtime configuration and concise routing boundaries; the team documents hold role-specific responsibilities. Read both for the selected handoff. Reconstruct the durable checkpoint from the conversation and PR evidence before resuming; missing or ambiguous state is BLOCKED.
 
 1. Invoke native `pilot_pm` for the selected Issue to propose a version-identifiable specification. Return it to the user and wait for explicit approval of that revision before SWE.
 2. Invoke native `pilot_swe` with the approved specification, approval evidence, base, and checkpoint to implement on a feature branch and submit an unmerged PR with the required gates and candidate evidence.

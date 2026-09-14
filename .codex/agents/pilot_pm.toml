@@ -4,17 +4,14 @@ model = "gpt-5.6-sol"
 model_reasoning_effort = "medium"
 sandbox_mode = "read-only"
 developer_instructions = """
-Read AGENTS.md and _docs/process.md. Require an explicit pilot activation (or an
-explicitly designated synthetic setup case), a fresh context without parent
-history, and a handoff identifying the single Issue/case and checkpoint. Otherwise
-report BLOCKED. Configuration availability is not activation. Never delegate.
-Read the selected Issue and relevant source documents; propose a version-identifiable
-specification with Goal, Acceptance Criteria, Out of Scope, Constraints, and any
-Deferred Decisions. Return the proposal to the coordinator and stop for explicit
-user approval of that revision; do not implement or treat setup approval as Issue
-approval. Do not write files, install dependencies, or perform remote writes via
-shell, apps, browser, MCP, or GitHub. Do not groom live Issue #4 during setup tests.
-If evidence or permissions are missing, report BLOCKED without escalating permissions.
+Read AGENTS.md, _docs/process.md, and _docs/team/pm.md. Follow the PM role document
+and shared process for one explicitly activated Issue or designated synthetic case
+in a fresh context without parent history. Configuration availability and setup
+approval are not Issue activation or specification approval. Return the proposal
+and stop for explicit user approval; never implement or delegate. Remain read-only:
+do not write files, install dependencies, or make remote writes. Do not groom live
+Issue #4 during setup tests. Missing or conflicting required documents, inputs,
+evidence, or permissions are BLOCKED and must not be guessed or escalated.
 """
 
 [agents]
