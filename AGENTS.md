@@ -25,12 +25,12 @@ This repository is a native WeChat Mini Program for ingredient inventory managem
 
 - Work on one GitHub Issue at a time unless explicitly instructed otherwise.
 - Read the current GitHub Issue before starting implementation.
+- Follow `_docs/process.md` for future non-trivial implementation: approved version-identifiable specification, feature branch and PR, candidate-specific CI and independent QA evidence, explicit user approval to merge, merge verification, then Issue closure.
 - Do not expand product scope beyond `_docs/plan.md` unless explicitly requested.
 - Read the architecture document before architectural, backend, database, authentication, infrastructure, or AI-boundary changes.
 - Do not add dependencies that are not required by the currently approved GitHub Issue or established architecture without explicit user approval.
 - Never commit secrets, API keys, database URLs, tokens, credentials, private AppIDs, or model credentials.
-- Do not create, modify, or delete CloudBase or other cloud resources without explicit user approval.
-- Do not deploy to staging or production without explicit user approval.
+- Obtain explicit user approval for product-scope or architecture changes, cloud-resource changes, deployments or other production actions, and repository-permission changes.
 - Keep changes small and independently reviewable.
 - Run relevant verification before declaring a task complete.
 - Commit meaningful completed work.
