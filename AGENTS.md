@@ -16,6 +16,9 @@ This repository is a native WeChat Mini Program for ingredient inventory managem
 ## Commands
 
 - `corepack pnpm install --frozen-lockfile` — install the pinned workspace dependencies from the lockfile.
+- `corepack pnpm format:check` — check deterministic formatting without modifying files.
+- `corepack pnpm lint` — run ESLint across the declared repository scope.
+- `corepack pnpm typecheck` — type-check the root and all three workspace packages without emitting files.
 - `corepack pnpm test` — run the Vitest test suite once.
 
 ## Rules

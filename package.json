@@ -3,10 +3,22 @@
   "version": "0.0.0",
   "private": true,
   "packageManager": "pnpm@12.4.1",
+  "engines": {
+    "node": ">=22.13.0 <23"
+  },
   "scripts": {
+    "format:check": "prettier --check \"**/*.{json,yaml,yml,js,cjs,mjs,ts,cts,mts}\"",
+    "lint": "eslint --max-warnings 0 .",
+    "typecheck": "tsc --noEmit -p tsconfig.json && tsc --noEmit -p apps/miniprogram/tsconfig.json && tsc --noEmit -p apps/api/tsconfig.json && tsc --noEmit -p packages/shared/tsconfig.json",
     "test": "vitest run"
   },
   "devDependencies": {
+    "@types/node": "22.20.2",
+    "@typescript-eslint/eslint-plugin": "8.70.0",
+    "@typescript-eslint/parser": "8.70.0",
+    "eslint": "10.10.0",
+    "prettier": "3.9.6",
+    "typescript": "5.9.3",
     "vitest": "5.0.0"
   }
 }

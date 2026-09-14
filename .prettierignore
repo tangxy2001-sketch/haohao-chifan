@@ -1,7 +1,8 @@
+.git/
 node_modules/
 coverage/
 dist/
 *.tsbuildinfo
 .eslintcache
 .prettier-cache
-.DS_Store
+pnpm-lock.yaml
