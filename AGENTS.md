@@ -37,3 +37,6 @@ This repository is a native WeChat Mini Program for ingredient inventory managem
 - Do not automatically start the next Issue.
 - Product-scope or architecture changes must not be silently inferred from implementation details.
 - Incorporate reusable corrections into the relevant living project documentation.
+- Native `pilot_pm`, `pilot_swe`, and `pilot_qa` availability is not authorization to invoke them. Follow the opt-in supervised pilot subsection in `_docs/process.md`; setup approval does not activate Issue #4 or unattended development.
+- The repository-scoped `$develop-issue` skill at `.agents/skills/develop-issue/SKILL.md` is an explicit-only entry point for the coordinating main session, using those existing roles and `_docs/process.md`. Require one user-selected Issue and explicit activation; adding or loading the skill does not approve a specification, activate Issue #4, or authorize merge or cloud actions.
+- `_docs/team/` defines the PM, Software Engineer, and QA Engineer responsibilities used by the corresponding pilot roles; shared workflow rules remain authoritative in `_docs/process.md`.
