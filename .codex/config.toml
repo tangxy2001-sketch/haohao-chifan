@@ -1,0 +1,5 @@
+# Native capability only; invocation requires explicit opt-in in _docs/process.md.
+# The user selects GPT-6 Astra / Medium in the coordinator session.
+[agents]
+enabled = true
+max_concurrent_threads_per_session = 1
