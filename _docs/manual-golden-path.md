@@ -44,6 +44,21 @@ Exercise this same behavioral path against, in order:
 
 The observable expectations stay stable while the backing layer changes.
 
+### Staged evidence
+
+These are requirements for future verification, not a record that a demonstration, service boundary, or integration has already run. The initial #14 demonstration may exercise only its existing three steps (add food, view expiry, request a recipe); it need not exercise all 18 steps. Record the corresponding golden-path step numbers and leave the others explicitly unverified.
+
+For each exercised step, record in the relevant Issue or PR: candidate revision, backing layer and environment, deterministic fixture/reset state, expected result, observed result and evidence, and remaining unverified integration with its owning Issue. Distinguish a failed check from a check that has not run; do not infer full acceptance from a partial demonstration.
+
+| Backing layer | Evidence and limits |
+| --- | --- |
+| Mock frontend | Demonstrates the exercised UI behavior against identified fake responses only. It cannot prove database atomicity, persistence, production identity, or production safety enforcement. |
+| Real API | Identifies the Fastify service revision, identity setup, and whether persistence or model calls remain fake; verifies only the exercised server behavior. |
+| Real PostgreSQL | Identifies the local/CI database setup and schema revision; transaction claims require relevant atomicity, rollback, and consistency tests, not merely a successful UI journey. Local/CI setup belongs to #7. |
+| CloudBase development/staging | Identifies the separately authorized environment and actual service, database, and trusted-identity integrations exercised (#8, #10, and staging verification in #83 as applicable). Local or mock evidence does not establish these integrations or production verification. |
+
+#9 owns the minimal replaceable frontend service boundary; feature Issues own their contracts, needed fake behavior, and real-service integration. #14 owns deterministic, resettable fixtures and fake behavior for its isolated three-step demonstration. Later path evidence should name the relevant feature owner, for example #46/#54 for recommendation and validation, #57/#63 for confirmed adjustments, #61 for pending reservations, and #72/#73 for completion. Demo data must remain separate from real account state and must not create real inventory, reminders, reservations, favorites, shopping items, or cooking history.
+
 ## Rules
 
 - The golden path does not replace feature-specific tests.
