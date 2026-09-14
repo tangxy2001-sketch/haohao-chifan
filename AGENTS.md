@@ -11,6 +11,7 @@ This repository is a native WeChat Mini Program for ingredient inventory managem
 - GitHub Issues — canonical active implementation backlog.
 - `_docs/tasks.md` — versioned snapshot of the original backlog; do not treat it as the active task tracker after Issues have been created.
 - `_docs/process.md` — development workflow and Git rules.
+- `_docs/manual-golden-path.md` — stable end-to-end manual acceptance path for the MVP.
 
 ## Commands
 
