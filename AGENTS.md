@@ -22,7 +22,7 @@ No project bootstrap, development, test, lint, formatting, or migration commands
 - Read the current GitHub Issue before starting implementation.
 - Do not expand product scope beyond `_docs/plan.md` unless explicitly requested.
 - Read the architecture document before architectural, backend, database, authentication, infrastructure, or AI-boundary changes.
-- Do not add dependencies without explicit user approval.
+- Do not add dependencies that are not required by the currently approved GitHub Issue or established architecture without explicit user approval.
 - Never commit secrets, API keys, database URLs, tokens, credentials, private AppIDs, or model credentials.
 - Do not create, modify, or delete CloudBase or other cloud resources without explicit user approval.
 - Do not deploy to staging or production without explicit user approval.
