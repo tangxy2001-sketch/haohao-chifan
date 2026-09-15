@@ -5,3 +5,4 @@ dist/
 .eslintcache
 .prettier-cache
 .DS_Store
+project.private.config.json
