@@ -1,0 +1,20 @@
+{
+  "appid": "touristappid",
+  "compileType": "miniprogram",
+  "condition": {},
+  "description": "好好吃饭原生微信小程序",
+  "miniprogramRoot": "apps/miniprogram/",
+  "packOptions": {
+    "ignore": [],
+    "include": []
+  },
+  "projectname": "haohao-chifan",
+  "setting": {
+    "es6": true,
+    "minified": false,
+    "postcss": true,
+    "urlCheck": true,
+    "useCompilerPlugins": ["typescript"]
+  },
+  "simulatorType": "wechat"
+}
