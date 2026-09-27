@@ -154,6 +154,21 @@ describe("server capability configuration", () => {
     },
   );
 
+  it.each(["", "   "])(
+    "rejects a %j model key after accepting a valid model URL",
+    (apiKey) => {
+      expect(() =>
+        parseRequiredModelConfig(
+          {
+            MODEL_API_BASE_URL: "https://example-model.invalid/v1",
+            MODEL_API_KEY: apiKey,
+          },
+          "production",
+        ),
+      ).toThrow(/MODEL_API_KEY/);
+    },
+  );
+
   it.each([
     [{ MODEL_API_KEY: SECRET_SENTINEL }, "local"],
     [{ MODEL_API_BASE_URL: "https://example-model.invalid" }, "local"],

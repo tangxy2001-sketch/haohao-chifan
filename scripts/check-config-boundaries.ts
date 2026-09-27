@@ -38,8 +38,21 @@ const MINI_PROGRAM_SOURCE_EXTENSIONS = new Set([
   ".wxss",
 ]);
 
-export function checkConfigBoundaries(repositoryRoot: string): void {
-  const trackedPaths = listTrackedPaths(repositoryRoot);
+export interface TrackedPathsCommand {
+  file: string;
+  argumentsPrefix: readonly string[];
+}
+
+export interface ConfigBoundaryOptions {
+  trackedPathsCommand?: TrackedPathsCommand;
+  environment?: Readonly<NodeJS.ProcessEnv>;
+}
+
+export function checkConfigBoundaries(
+  repositoryRoot: string,
+  options: ConfigBoundaryOptions = {},
+): void {
+  const trackedPaths = listTrackedPaths(repositoryRoot, options);
   const failures: string[] = [];
 
   for (const path of trackedPaths) {
@@ -103,14 +116,33 @@ export function checkConfigBoundaries(repositoryRoot: string): void {
   }
 }
 
-function listTrackedPaths(repositoryRoot: string): string[] {
-  return execFileSync("git", ["ls-files", "-z"], {
-    cwd: repositoryRoot,
-    encoding: "utf8",
-  })
+function listTrackedPaths(
+  repositoryRoot: string,
+  options: ConfigBoundaryOptions,
+): string[] {
+  const command = options.trackedPathsCommand ?? {
+    file: "git",
+    argumentsPrefix: [],
+  };
+
+  return execFileSync(
+    command.file,
+    [...command.argumentsPrefix, "ls-files", "-z"],
+    {
+      cwd: repositoryRoot,
+      encoding: "utf8",
+      env: createGitEnvironment(options.environment ?? process.env),
+    },
+  )
     .split("\0")
     .filter((path) => path.length > 0)
     .sort();
+}
+
+function createGitEnvironment(
+  environment: Readonly<NodeJS.ProcessEnv>,
+): NodeJS.ProcessEnv {
+  return environment.PATH === undefined ? {} : { PATH: environment.PATH };
 }
 
 function parseExample(path: string): Record<string, string> {

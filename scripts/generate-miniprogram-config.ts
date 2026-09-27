@@ -42,6 +42,18 @@ export function parsePublicApiBaseUrl(
     );
   }
 
+  const authoritySeparator = value.indexOf("://");
+  const rawPathStart =
+    authoritySeparator === -1
+      ? -1
+      : value.indexOf("/", authoritySeparator + "://".length);
+
+  if (rawPathStart !== -1 && value.slice(rawPathStart) !== "/") {
+    throw new Error(
+      "Invalid MINIPROGRAM_PUBLIC_API_BASE_URL: only an origin with no path is allowed.",
+    );
+  }
+
   let url: URL;
   try {
     url = new URL(value);

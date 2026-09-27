@@ -60,6 +60,8 @@ describe("Mini Program public API URL", () => {
     "ftp://example-api.invalid",
     "https://synthetic-user:synthetic-password@example-api.invalid",
     "https://example-api.invalid/v1",
+    "https://example-api.invalid/v1/..",
+    "https://example-api.invalid/%2e",
     "https://example-api.invalid?query=value",
     "https://example-api.invalid#fragment",
     "https://example-api.invalid?",
@@ -84,11 +86,15 @@ describe("Mini Program public configuration generation", () => {
     const directory = await createTemporaryDirectory();
     const outputPath = join(directory, "config", "public-api.generated.ts");
 
-    await generatePublicConfig({
+    const syntheticInput = {
       targetEnvironment: "production",
       publicApiBaseUrl: "https://example-api.invalid/",
       outputPath,
-    });
+      unknownField: "synthetic-unknown-value",
+      MODEL_API_KEY: SECRET_SENTINEL,
+    };
+
+    await generatePublicConfig(syntheticInput);
 
     const output = await readFile(outputPath, "utf8");
     expect(output).toBe(
@@ -136,6 +142,46 @@ describe("Mini Program public configuration generation", () => {
       "existing synthetic output\n",
     );
   });
+
+  it.each([
+    "https://example-api.invalid/v1/..",
+    "https://example-api.invalid/%2e",
+  ])(
+    "does not create or overwrite output for a raw non-root path %s",
+    async (publicApiBaseUrl) => {
+      const directory = await createTemporaryDirectory();
+      const missingOutputPath = join(
+        directory,
+        "missing",
+        "public-api.generated.ts",
+      );
+      const existingOutputPath = join(directory, "public-api.generated.ts");
+      const existingOutput = "existing synthetic output\n";
+      await writeFile(existingOutputPath, existingOutput, "utf8");
+
+      await expect(
+        generatePublicConfig({
+          targetEnvironment: "production",
+          publicApiBaseUrl,
+          outputPath: missingOutputPath,
+        }),
+      ).rejects.toThrow(/no path/);
+      await expect(readFile(missingOutputPath, "utf8")).rejects.toMatchObject({
+        code: "ENOENT",
+      });
+
+      await expect(
+        generatePublicConfig({
+          targetEnvironment: "production",
+          publicApiBaseUrl,
+          outputPath: existingOutputPath,
+        }),
+      ).rejects.toThrow(/no path/);
+      await expect(readFile(existingOutputPath, "utf8")).resolves.toBe(
+        existingOutput,
+      );
+    },
+  );
 });
 
 async function createTemporaryDirectory(): Promise<string> {
