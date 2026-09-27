@@ -7,6 +7,7 @@
     "node": ">=22.13.0 <23"
   },
   "scripts": {
+    "generate:miniprogram-config": "node --experimental-strip-types scripts/generate-miniprogram-config.ts",
     "format:check": "prettier --check \"**/*.{json,yaml,yml,js,cjs,mjs,ts,cts,mts}\"",
     "lint": "eslint --max-warnings 0 .",
     "typecheck": "tsc --noEmit -p tsconfig.json && tsc --noEmit -p apps/miniprogram/tsconfig.json && tsc --noEmit -p apps/api/tsconfig.json && tsc --noEmit -p packages/shared/tsconfig.json",
