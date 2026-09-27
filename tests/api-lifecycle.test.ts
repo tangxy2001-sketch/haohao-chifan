@@ -7,6 +7,7 @@ import { describe, expect, it, vi } from "vitest";
 import { createApp } from "../apps/api/src/app.ts";
 import { parseStartupConfig } from "../apps/api/src/config.ts";
 import { createShutdown } from "../apps/api/src/lifecycle.ts";
+import { runApiProcess } from "../apps/api/src/main.ts";
 
 const fixturePath = fileURLToPath(
   new URL("./fixtures/api-process.fixture.ts", import.meta.url),
@@ -18,6 +19,7 @@ const entryPath = fileURLToPath(
 describe("API startup configuration", () => {
   it("uses the specified defaults", () => {
     expect(parseStartupConfig({})).toEqual({
+      appEnv: "local",
       host: "0.0.0.0",
       port: 3000,
     });
@@ -25,6 +27,7 @@ describe("API startup configuration", () => {
 
   it("accepts an explicit host and valid integer port", () => {
     expect(parseStartupConfig({ HOST: "127.0.0.1", PORT: "65535" })).toEqual({
+      appEnv: "local",
       host: "127.0.0.1",
       port: 65_535,
     });
@@ -38,6 +41,50 @@ describe("API startup configuration", () => {
       );
     },
   );
+
+  it("validates configuration before creating or listening with an application", async () => {
+    const createApplication = vi.fn();
+
+    await expect(
+      runApiProcess({
+        createApplication,
+        environment: { DATABASE_URL: "" },
+      }),
+    ).rejects.toThrow(/DATABASE_URL/);
+
+    expect(createApplication).not.toHaveBeenCalled();
+  });
+
+  it("validates complete unconnected groups without initializing them", async () => {
+    const listen = vi.fn().mockResolvedValue("http://127.0.0.1:3000");
+    const once = vi.fn();
+    const fakeApp = {
+      listen,
+      close: vi.fn(),
+    } as unknown as ReturnType<typeof createApp>;
+    const processLike = {
+      env: {},
+      exitCode: undefined,
+      once,
+      removeListener: vi.fn(),
+    } as unknown as NodeJS.Process;
+
+    await runApiProcess({
+      createApplication: () => fakeApp,
+      environment: {
+        APP_ENV: "test",
+        CLOUDBASE_ENV_ID: "example-cloud.invalid",
+        DATABASE_URL:
+          "postgresql://example-user:example-password@example-db.invalid/example-database",
+        MODEL_API_BASE_URL: "http://example-model.invalid/v1",
+        MODEL_API_KEY: "SYNTHETIC_MODEL_SECRET_SENTINEL",
+      },
+      processLike,
+    });
+
+    expect(listen).toHaveBeenCalledWith({ host: "0.0.0.0", port: 3000 });
+    expect(once).toHaveBeenCalledTimes(2);
+  });
 });
 
 describe("API shutdown", () => {
@@ -91,7 +138,6 @@ describe("API process entry", () => {
       ["--no-warnings", "--experimental-strip-types", fixturePath],
       {
         env: {
-          ...process.env,
           HOST: "127.0.0.1",
           PORT: String(port),
         },
@@ -132,7 +178,7 @@ describe("API process entry", () => {
       process.execPath,
       ["--no-warnings", "--experimental-strip-types", entryPath],
       {
-        env: { ...process.env, PORT: "not-a-port" },
+        env: { PORT: "SYNTHETIC_INVALID_PORT_SENTINEL" },
         stdio: ["ignore", "pipe", "pipe"],
       },
     );
@@ -144,7 +190,43 @@ describe("API process entry", () => {
     });
     expect(output()).toMatch(/API startup failed\./);
     expect(output()).toMatch(/Invalid PORT.*integer from 1 to 65535/);
+    expect(output()).not.toContain("SYNTHETIC_INVALID_PORT_SENTINEL");
   });
+
+  it.each([
+    {
+      environment: { MODEL_API_KEY: "SYNTHETIC_MODEL_SECRET_SENTINEL_6F2C" },
+      sentinel: "SYNTHETIC_MODEL_SECRET_SENTINEL_6F2C",
+      field: "MODEL_API_BASE_URL",
+    },
+    {
+      environment: {
+        DATABASE_URL:
+          "postgresql://example-user:SYNTHETIC_DATABASE_PASSWORD_9A1D@example.invalid/",
+      },
+      sentinel: "SYNTHETIC_DATABASE_PASSWORD_9A1D",
+      field: "DATABASE_URL",
+    },
+  ])(
+    "keeps synthetic secrets out of startup stdout and stderr",
+    async ({ environment, sentinel, field }) => {
+      const child = spawn(
+        process.execPath,
+        ["--no-warnings", "--experimental-strip-types", entryPath],
+        { env: environment, stdio: ["ignore", "pipe", "pipe"] },
+      );
+      const output = captureOutput(child);
+
+      await expect(waitForExit(child, 5_000)).resolves.toEqual({
+        code: 1,
+        signal: null,
+      });
+      expect(output()).toMatch(/API startup failed\./);
+      expect(output()).toContain(field);
+      expect(output()).not.toContain(sentinel);
+      expect(output()).not.toContain("example-user");
+    },
+  );
 
   it("fails with a nonzero status when the listener cannot start", async () => {
     const blocker = createServer();
@@ -154,7 +236,6 @@ describe("API process entry", () => {
       ["--no-warnings", "--experimental-strip-types", entryPath],
       {
         env: {
-          ...process.env,
           HOST: "127.0.0.1",
           PORT: String(port),
         },

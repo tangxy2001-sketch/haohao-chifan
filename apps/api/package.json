@@ -4,7 +4,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "start": "node --experimental-strip-types src/main.ts"
+    "start": "node --experimental-strip-types src/main.ts",
+    "start:local": "node --env-file-if-exists=.env.local --experimental-strip-types src/main.ts"
   },
   "dependencies": {
     "fastify": "5.6.2"

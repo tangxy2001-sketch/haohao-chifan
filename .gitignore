@@ -6,3 +6,12 @@ dist/
 .prettier-cache
 .DS_Store
 project.private.config.json
+
+# Real environment files are local-only. Explicit examples remain tracked.
+**/.env
+**/.env.*
+!**/.env.example
+!**/.env.*.example
+
+# Generated public Mini Program configuration is a local build input.
+apps/miniprogram/config/public-api.generated.ts
